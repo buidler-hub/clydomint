@@ -69,8 +69,6 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     const name = text.split("|")[0] || undefined;
     const description = text.split("|")[1] || undefined;
 
-    console.log(name, description);
-
     message.reply("Upload in process...");
 
     const mintResponse: MintFunction | undefined = await mint(
