@@ -1,20 +1,10 @@
+import { MintFunction, mint } from "./utils";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
-import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import discord, { Intents, Message } from "discord.js";
-import { ethers } from "ethers";
 import { Routes } from "discord-api-types/v9";
-import { attachIsImage, mint, MintFunction } from "./utils";
-const PREFIX = ";";
+import discord, { Intents, Message } from "discord.js";
 
-const sdk = new ThirdwebSDK(
-  new ethers.Wallet(
-    process.env.WALLET_PRIVATE_KEY!,
-    ethers.getDefaultProvider(process.env.MUMBAI_RPC)
-  )
-);
-
-const collection = sdk.getNFTCollection(process.env.NFT_COLLECTION_ADDRESS!);
+const PREFIX = process.env.PREFIX || ";";
 
 const bot = new discord.Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -25,7 +15,7 @@ const commands = [
     .setName("hello")
     .setDescription("Replies with hello!"),
   new SlashCommandBuilder().setName("mint").setDescription("Mints NFT"),
-].map((command) => command.toJSON());
+].map(command => command.toJSON());
 
 bot.on("ready", () => {
   console.log(`[🤖] Bot started! Username - ${bot.user?.tag}`);
@@ -43,11 +33,11 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
   const content = message.content;
   const msgsplit = content.split(" ");
 
-  if (msgsplit[0].toLowerCase() === ";hello") {
+  if (msgsplit[0].toLowerCase() === `${PREFIX}hello`) {
     return message.reply("Hello");
   }
 
-  if (msgsplit[0].toLowerCase() === ";mint") {
+  if (msgsplit[0].toLowerCase() === `${PREFIX}mint`) {
     // Signature mint NFT
     // TODO: check if being replied
     // Check for any attached images
@@ -56,9 +46,6 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
         "You must attach an image or reply to a message with an image!"
       );
     }
-    // Check if attached is image
-    const isImage = attachIsImage(message.attachments.first()!);
-    if (!isImage) return message.reply("Attached is not an image");
 
     let text: string = "";
     for (let i = 1; i < msgsplit.length; i++) {

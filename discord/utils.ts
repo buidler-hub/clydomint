@@ -1,27 +1,21 @@
-import dotenv from "dotenv";
-dotenv.config();
-import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { Message, MessageAttachment } from "discord.js";
-import { ethers } from "ethers";
 import { MintData, mintData } from "../data";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { Message } from "discord.js";
+import dotenv from "dotenv";
+import { ethers } from "ethers";
 import { v4 } from "uuid";
+
+dotenv.config();
 
 type MintFunction = {
   data: MintData;
   signature: string;
 };
 
-function attachIsImage(msgAttach: MessageAttachment): boolean {
-  var url = msgAttach.url;
-  // True if this url is a png image.
-  return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
-}
-
 async function mint(
   name: string | undefined,
   description: string | undefined,
-  image: string,
-  message?: Message
+  image: string
 ): Promise<MintFunction | undefined> {
   try {
     const sdk = new ThirdwebSDK(
@@ -61,4 +55,4 @@ async function mint(
   }
 }
 
-export { attachIsImage, mint, MintFunction };
+export { mint, MintFunction };
