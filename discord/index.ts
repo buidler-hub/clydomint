@@ -42,9 +42,16 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     // TODO: check if being replied
     // Check for any attached images
     if (message.attachments.size === 0) {
-      return message.reply(
-        "You must attach an image or reply to a message with an image!"
-      );
+      return message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setTitle("Error!")
+            .setDescription(
+              "You must attach an image or reply to a message with an image!"
+            )
+            .setColor("RED"),
+        ],
+      });
     }
 
     let text: string = "";
@@ -56,7 +63,13 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     const name = text.split("|")[0] || undefined;
     const description = text.split("|")[1] || undefined;
 
-    message.reply("Upload in process...");
+    message.reply({
+      embeds: [
+        new discord.MessageEmbed()
+          .setDescription("Upload in process...")
+          .setColor("BLURPLE"),
+      ],
+    });
 
     const mintResponse: MintFunction | undefined = await mint(
       name,
@@ -66,10 +79,22 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
 
     if (!mintResponse) return message.reply("Minting failed!");
 
-    message.author.send(
-      `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
-    );
-    message.reply("Check your DM to proceed with claiming the NFT");
+    message.author.send({
+      embeds: [
+        new discord.MessageEmbed()
+          .setDescription(
+            `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
+          )
+          .setColor("GREEN"),
+      ],
+    });
+    message.reply({
+      embeds: [
+        new discord.MessageEmbed()
+          .setDescription("Check your DM to proceed with claiming the NFT")
+          .setColor("GREEN"),
+      ],
+    });
   }
 });
 
