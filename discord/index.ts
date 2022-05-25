@@ -26,7 +26,7 @@ bot.on("ready", () => {
     .then(() => console.log("[🛠] Discord commands registered successfully!"))
     .catch(console.error);
 
-  bot.user?.setActivity({ name: "discord.gg/buidlers", type: "WATCHING" });
+  bot.user?.setActivity({ name: "discord.gg/buidlershub", type: "WATCHING" });
 });
 
 bot.on("messageCreate", async (message: Message): Promise<any> => {
