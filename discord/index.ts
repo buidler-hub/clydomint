@@ -47,7 +47,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
           new discord.MessageEmbed()
             .setTitle("Error!")
             .setDescription(
-              "You must attach an image or reply to a message with an image!"
+              "You must attach an image!"
             )
             .setColor("RED"),
         ],
@@ -62,6 +62,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     const image = message.attachments.first()?.url!;
     const name = text.split("|")[0] || undefined;
     const description = text.split("|")[1] || undefined;
+    const network = 'polygon'
 
     message.reply({
       embeds: [
@@ -74,7 +75,70 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     const mintResponse: MintFunction | undefined = await mint(
       name,
       description,
-      image
+      image,
+      network
+    );
+
+    if (!mintResponse) return message.reply("Minting failed!");
+
+    message.author.send({
+      embeds: [
+        new discord.MessageEmbed()
+          .setDescription(
+            `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
+          )
+          .setColor("GREEN"),
+      ],
+    });
+    message.reply({
+      embeds: [
+        new discord.MessageEmbed()
+          .setDescription("Check your DM to proceed with claiming the NFT")
+          .setColor("GREEN"),
+      ],
+    });
+  }
+
+  if (msgsplit[0].toLowerCase() === `${PREFIX}mintmumbai`) {
+    // Signature mint NFT
+    // TODO: check if being replied
+    // Check for any attached images
+    if (message.attachments.size === 0) {
+      return message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setTitle("Error!")
+            .setDescription(
+              "You must attach an image!"
+            )
+            .setColor("RED"),
+        ],
+      });
+    }
+
+    let text: string = "";
+    for (let i = 1; i < msgsplit.length; i++) {
+      text += msgsplit[i] + " ";
+    }
+
+    const image = message.attachments.first()?.url!;
+    const name = text.split("|")[0] || undefined;
+    const description = text.split("|")[1] || undefined;
+    const network = 'mumbai'
+
+    message.reply({
+      embeds: [
+        new discord.MessageEmbed()
+          .setDescription("Upload in process...")
+          .setColor("BLURPLE"),
+      ],
+    });
+
+    const mintResponse: MintFunction | undefined = await mint(
+      name,
+      description,
+      image,
+      network
     );
 
     if (!mintResponse) return message.reply("Minting failed!");
