@@ -14,6 +14,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/v1", api);
 
+app.get('/', (req, res) => {
+  res.json({ message: 'ok' })
+})
+
 app.listen(PORT, () =>
   console.log(
     `[🚀] Server running on port ${PORT} ${
