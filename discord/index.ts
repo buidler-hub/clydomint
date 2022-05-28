@@ -71,12 +71,12 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     const msgsplit = content.split(" ");
 
     if (msgsplit[0].toLowerCase() === `${PREFIX}hello`) {
-      return message.reply("Hello");
+      return await message.reply("Hello");
     }
 
     if (msgsplit[0].toLowerCase() === `${PREFIX}mint`) {
       if (message.attachments.size === 0) {
-        return message.reply({
+        return await message.reply({
           embeds: [
             new discord.MessageEmbed()
               .setTitle("Error!")
@@ -96,7 +96,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
       const description = text.split("|")[1] || undefined;
       const network = "polygon";
 
-      message.reply({
+      await message.reply({
         embeds: [
           new discord.MessageEmbed()
             .setDescription("Upload in process...")
@@ -113,7 +113,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
 
       if (!mintResponse) return message.reply("Minting failed!");
 
-      message.author.send({
+      await message.author.send({
         embeds: [
           new discord.MessageEmbed()
             .setDescription(
@@ -122,7 +122,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
             .setColor("GREEN"),
         ],
       });
-      message.reply({
+      await message.reply({
         embeds: [
           new discord.MessageEmbed()
             .setDescription("Check your DM to proceed with claiming the NFT")
@@ -133,7 +133,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
 
     if (msgsplit[0].toLowerCase() === `${PREFIX}mumbai`) {
       if (message.attachments.size === 0) {
-        return message.reply({
+        return await message.reply({
           embeds: [
             new discord.MessageEmbed()
               .setTitle("Error!")
@@ -153,7 +153,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
       const description = text.split("|")[1] || undefined;
       const network = "mumbai";
 
-      message.reply({
+      await message.reply({
         embeds: [
           new discord.MessageEmbed()
             .setDescription("Upload in process...")
@@ -168,9 +168,9 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
         network
       );
 
-      if (!mintResponse) return message.reply("Minting failed!");
+      if (!mintResponse) return await message.reply("Minting failed!");
 
-      message.author.send({
+      await message.author.send({
         embeds: [
           new discord.MessageEmbed()
             .setDescription(
@@ -179,7 +179,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
             .setColor("GREEN"),
         ],
       });
-      message.reply({
+      await message.reply({
         embeds: [
           new discord.MessageEmbed()
             .setDescription("Check your DM to proceed with claiming the NFT")
@@ -188,7 +188,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
       });
     }
   } catch (err) {
-    message.reply({
+    await message.reply({
       embeds: [
         new discord.MessageEmbed()
           .setDescription("Error processing request!")
