@@ -30,151 +30,169 @@ bot.on("ready", () => {
 });
 
 bot.on("guildCreate", async (guild: Guild) => {
-  if (process.env.ANALYTICS_CHANNEL_ID) {
-    const embed = new discord.MessageEmbed()
-      .setTitle("Joined Server!")
-      .setDescription(`Joined Server **${guild.name}**!`)
-      .setColor("GREEN");
-    const channel: Channel = (await bot.channels.fetch(
-      process.env.ANALYTICS_CHANNEL_ID
-    )) as Channel;
-    // @ts-ignore because .send() doesn't exist in type for some reason
-    channel.send({ embeds: [embed] });
+  try {
+    if (process.env.ANALYTICS_CHANNEL_ID) {
+      const embed = new discord.MessageEmbed()
+        .setTitle("Joined Server!")
+        .setDescription(`Joined Server **${guild.name}**!`)
+        .setColor("GREEN");
+      const channel: Channel = (await bot.channels.fetch(
+        process.env.ANALYTICS_CHANNEL_ID
+      )) as Channel;
+      // @ts-ignore because .send() doesn't exist in type for some reason
+      channel.send({ embeds: [embed] });
+    }
+  } catch (err) {
+    console.error("[🚨] Error in logs of server join: ", err);
   }
 });
 
 bot.on("guildDelete", async (guild: Guild) => {
-  if (process.env.ANALYTICS_CHANNEL_ID) {
-    const embed = new discord.MessageEmbed()
-      .setTitle("Left Server!")
-      .setDescription(`Left Server **${guild.name}**!`)
-      .setColor("RED");
-    const channel: Channel = (await bot.channels.fetch(
-      process.env.ANALYTICS_CHANNEL_ID
-    )) as Channel;
-    // @ts-ignore because .send() doesn't exist in type for some reason
-    channel.send({ embeds: [embed] });
+  try {
+    if (process.env.ANALYTICS_CHANNEL_ID) {
+      const embed = new discord.MessageEmbed()
+        .setTitle("Left Server!")
+        .setDescription(`Left Server **${guild.name}**!`)
+        .setColor("RED");
+      const channel: Channel = (await bot.channels.fetch(
+        process.env.ANALYTICS_CHANNEL_ID
+      )) as Channel;
+      // @ts-ignore because .send() doesn't exist in type for some reason
+      channel.send({ embeds: [embed] });
+    }
+  } catch (err) {
+    console.error("[🚨] Error in logs of server leave: ", err);
   }
 });
 
 bot.on("messageCreate", async (message: Message): Promise<any> => {
-  const content = message.content;
-  const msgsplit = content.split(" ");
+  try {
+    const content = message.content;
+    const msgsplit = content.split(" ");
 
-  if (msgsplit[0].toLowerCase() === `${PREFIX}hello`) {
-    return message.reply("Hello");
-  }
+    if (msgsplit[0].toLowerCase() === `${PREFIX}hello`) {
+      return message.reply("Hello");
+    }
 
-  if (msgsplit[0].toLowerCase() === `${PREFIX}mint`) {
-    if (message.attachments.size === 0) {
-      return message.reply({
+    if (msgsplit[0].toLowerCase() === `${PREFIX}mint`) {
+      if (message.attachments.size === 0) {
+        return message.reply({
+          embeds: [
+            new discord.MessageEmbed()
+              .setTitle("Error!")
+              .setDescription("You must attach an image!")
+              .setColor("RED"),
+          ],
+        });
+      }
+
+      let text: string = "";
+      for (let i = 1; i < msgsplit.length; i++) {
+        text += msgsplit[i] + " ";
+      }
+
+      const image = message.attachments.first()?.url!;
+      const name = text.split("|")[0] || undefined;
+      const description = text.split("|")[1] || undefined;
+      const network = "polygon";
+
+      message.reply({
         embeds: [
           new discord.MessageEmbed()
-            .setTitle("Error!")
-            .setDescription("You must attach an image!")
-            .setColor("RED"),
+            .setDescription("Upload in process...")
+            .setColor("BLURPLE"),
+        ],
+      });
+
+      const mintResponse: MintFunction | undefined = await mint(
+        name,
+        description,
+        image,
+        network
+      );
+
+      if (!mintResponse) return message.reply("Minting failed!");
+
+      message.author.send({
+        embeds: [
+          new discord.MessageEmbed()
+            .setDescription(
+              `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
+            )
+            .setColor("GREEN"),
+        ],
+      });
+      message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setDescription("Check your DM to proceed with claiming the NFT")
+            .setColor("GREEN"),
         ],
       });
     }
 
-    let text: string = "";
-    for (let i = 1; i < msgsplit.length; i++) {
-      text += msgsplit[i] + " ";
-    }
+    if (msgsplit[0].toLowerCase() === `${PREFIX}mumbai`) {
+      if (message.attachments.size === 0) {
+        return message.reply({
+          embeds: [
+            new discord.MessageEmbed()
+              .setTitle("Error!")
+              .setDescription("You must attach an image!")
+              .setColor("RED"),
+          ],
+        });
+      }
 
-    const image = message.attachments.first()?.url!;
-    const name = text.split("|")[0] || undefined;
-    const description = text.split("|")[1] || undefined;
-    const network = "polygon";
+      let text: string = "";
+      for (let i = 1; i < msgsplit.length; i++) {
+        text += msgsplit[i] + " ";
+      }
 
-    message.reply({
-      embeds: [
-        new discord.MessageEmbed()
-          .setDescription("Upload in process...")
-          .setColor("BLURPLE"),
-      ],
-    });
+      const image = message.attachments.first()?.url!;
+      const name = text.split("|")[0] || undefined;
+      const description = text.split("|")[1] || undefined;
+      const network = "mumbai";
 
-    const mintResponse: MintFunction | undefined = await mint(
-      name,
-      description,
-      image,
-      network
-    );
-
-    if (!mintResponse) return message.reply("Minting failed!");
-
-    message.author.send({
-      embeds: [
-        new discord.MessageEmbed()
-          .setDescription(
-            `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
-          )
-          .setColor("GREEN"),
-      ],
-    });
-    message.reply({
-      embeds: [
-        new discord.MessageEmbed()
-          .setDescription("Check your DM to proceed with claiming the NFT")
-          .setColor("GREEN"),
-      ],
-    });
-  }
-
-  if (msgsplit[0].toLowerCase() === `${PREFIX}mumbai`) {
-    if (message.attachments.size === 0) {
-      return message.reply({
+      message.reply({
         embeds: [
           new discord.MessageEmbed()
-            .setTitle("Error!")
-            .setDescription("You must attach an image!")
-            .setColor("RED"),
+            .setDescription("Upload in process...")
+            .setColor("BLURPLE"),
+        ],
+      });
+
+      const mintResponse: MintFunction | undefined = await mint(
+        name,
+        description,
+        image,
+        network
+      );
+
+      if (!mintResponse) return message.reply("Minting failed!");
+
+      message.author.send({
+        embeds: [
+          new discord.MessageEmbed()
+            .setDescription(
+              `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
+            )
+            .setColor("GREEN"),
+        ],
+      });
+      message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setDescription("Check your DM to proceed with claiming the NFT")
+            .setColor("GREEN"),
         ],
       });
     }
-
-    let text: string = "";
-    for (let i = 1; i < msgsplit.length; i++) {
-      text += msgsplit[i] + " ";
-    }
-
-    const image = message.attachments.first()?.url!;
-    const name = text.split("|")[0] || undefined;
-    const description = text.split("|")[1] || undefined;
-    const network = "mumbai";
-
+  } catch (err) {
     message.reply({
       embeds: [
         new discord.MessageEmbed()
-          .setDescription("Upload in process...")
-          .setColor("BLURPLE"),
-      ],
-    });
-
-    const mintResponse: MintFunction | undefined = await mint(
-      name,
-      description,
-      image,
-      network
-    );
-
-    if (!mintResponse) return message.reply("Minting failed!");
-
-    message.author.send({
-      embeds: [
-        new discord.MessageEmbed()
-          .setDescription(
-            `Follow the following URL to mint and claim your NFT!\n\n${process.env.FRONTEND_BASE_URL}/mint/${mintResponse.data.id}`
-          )
-          .setColor("GREEN"),
-      ],
-    });
-    message.reply({
-      embeds: [
-        new discord.MessageEmbed()
-          .setDescription("Check your DM to proceed with claiming the NFT")
-          .setColor("GREEN"),
+          .setDescription("Error processing request!")
+          .setColor("RED"),
       ],
     });
   }
