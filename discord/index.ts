@@ -66,9 +66,6 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
   }
 
   if (msgsplit[0].toLowerCase() === `${PREFIX}mint`) {
-    // Signature mint NFT
-    // TODO: check if being replied
-    // Check for any attached images
     if (message.attachments.size === 0) {
       return message.reply({
         embeds: [
@@ -125,10 +122,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     });
   }
 
-  if (msgsplit[0].toLowerCase() === `${PREFIX}mintmumbai`) {
-    // Signature mint NFT
-    // TODO: check if being replied
-    // Check for any attached images
+  if (msgsplit[0].toLowerCase() === `${PREFIX}mumbai`) {
     if (message.attachments.size === 0) {
       return message.reply({
         embeds: [
