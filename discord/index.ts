@@ -161,7 +161,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
         network
       );
 
-      if (!mintResponse) return message.reply("Minting failed!");
+      if (!mintResponse) return await message.reply("Minting failed!");
 
       await message.author.send({
         embeds: [
@@ -172,7 +172,8 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
             .setColor("GREEN"),
         ],
       });
-      await message.reply({
+      await message.channel.send({
+        content: `<@${message.author.id}>`,
         embeds: [
           new discord.MessageEmbed()
             .setDescription("Check your DM to proceed with claiming the NFT")
@@ -229,7 +230,8 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
             .setColor("GREEN"),
         ],
       });
-      await message.reply({
+      await message.channel.send({
+        content: `<@${message.author.id}>`,
         embeds: [
           new discord.MessageEmbed()
             .setDescription("Check your DM to proceed with claiming the NFT")
@@ -241,7 +243,9 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
     await message.reply({
       embeds: [
         new discord.MessageEmbed()
-          .setDescription("Error processing request!")
+          .setDescription(
+            "Error processing request! Make sure your DMs are opened and you haven't blocked the bot!"
+          )
           .setColor("RED"),
       ],
     });
