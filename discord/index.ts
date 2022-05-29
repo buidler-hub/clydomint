@@ -74,6 +74,56 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
       return await message.reply("Hello");
     }
 
+    if (msgsplit[0].toLowerCase() === `${PREFIX}help`) {
+      return await message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setColor("YELLOW")
+            .setTitle("ClydoMint Help")
+            .setThumbnail(
+              "https://cdn.discordapp.com/avatars/977579405163520082/6bf793fca93364b1735f9bb2cd1f229c.webp?size=160"
+            )
+            .setDescription(
+              "Here are the list of commands you can use to mint NFTs using ClydoMint\n\n`;mint title | description` - Attach image along with the message. Mints NFT to Polygon mainnet.\n`;mumbai title | description` - Attach image along with the message. Mints NFT on Polygon Mumbai testnet.\n\nLove the bot? [Invite to your server](https://discord.com/api/oauth2/authorize?client_id=" +
+                bot.user!.id +
+                "&permissions=8&scope=bot)!\nVisit [ClydoMint website](https://clydomint.xyz).\n[Join the support server](https://discord.gg/buidlershub) if you have any questions or found a bug!"
+            ),
+        ],
+      });
+    }
+
+    if (msgsplit[0].toLowerCase() === `${PREFIX}server`) {
+      return await message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setColor("YELLOW")
+            .setTitle("Buidler's Hub - ClydoMint Support Server")
+            .setThumbnail(
+              "https://cdn.discordapp.com/avatars/977579405163520082/6bf793fca93364b1735f9bb2cd1f229c.webp?size=160"
+            )
+            .setDescription("[Join now!](https://discord.gg/buidlershub)"),
+        ],
+      });
+    }
+
+    if (msgsplit[0].toLowerCase() === `${PREFIX}invite`) {
+      return await message.reply({
+        embeds: [
+          new discord.MessageEmbed()
+            .setColor("YELLOW")
+            .setTitle("Invite ClydoMint")
+            .setThumbnail(
+              "https://cdn.discordapp.com/avatars/977579405163520082/6bf793fca93364b1735f9bb2cd1f229c.webp?size=160"
+            )
+            .setDescription(
+              "To invite ClydoMint in your server, [click here](https://discord.com/api/oauth2/authorize?client_id=" +
+                bot.user!.id +
+                "&permissions=8&scope=bot)!"
+            ),
+        ],
+      });
+    }
+
     if (msgsplit[0].toLowerCase() === `${PREFIX}mint`) {
       if (message.attachments.size === 0) {
         return await message.reply({
