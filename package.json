@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
+    "@discordjs/rest": "^1.0.0",
     "@thirdweb-dev/sdk": "^2.2.19",
     "@types/uuid": "^8.3.4",
     "cors": "^2.8.5",
